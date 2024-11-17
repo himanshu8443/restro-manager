@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,22 +17,33 @@ import {
   BarChart2,
   ArrowRight,
 } from "lucide-react";
-import resturantImage from "../assets/restaurant.svg";
-import { useEffect, useLayoutEffect, useState } from "react";
-import NavBar from "@/components/NavBar";
 
-export default function Page() {
-  const [isLogged, setIsLogged] = useState(false);
-  useLayoutEffect(() => {
-    const checkLoggedIn = async () => {
-      const loggedIn = localStorage.getItem("TOKEN");
-      setIsLogged(loggedIn ? true : false);
-    };
-    checkLoggedIn();
-  }, []);
+export function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar />
+      <header className="bg-primary text-primary-foreground py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center space-x-2">
+            <Utensils className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Restro-Manager</h1>
+          </Link>
+          <nav>
+            <ul className="flex space-x-4">
+              <li>
+                <Link href="/about" className="hover:underline">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:underline">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
       <main className="flex-grow container mx-auto px-4 py-8">
         <Card className="w-full max-w-4xl mx-auto overflow-hidden">
           <div className="md:flex">
@@ -49,32 +61,21 @@ export default function Page() {
                   Manage your restaurant efficiently with our powerful tool.
                   From reservations to analytics, we've got you covered.
                 </p>
-                {!isLogged && (
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-4">
-                    <Button asChild size="lg">
-                      <Link href="/login">
-                        Login <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="lg">
-                      <Link href="/register">Register</Link>
-                    </Button>
-                  </div>
-                )}
-                {isLogged && (
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-4">
-                    <Button asChild size="lg">
-                      <Link href="/dashboard">
-                        Dashboard <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                )}
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-4">
+                  <Button asChild size="lg">
+                    <Link href="/login">
+                      Login <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link href="/register">Register</Link>
+                  </Button>
+                </div>
               </CardContent>
             </div>
             <div className="md:w-1/2 relative h-64 md:h-auto">
               <Image
-                src={resturantImage}
+                src="/placeholder.svg?height=400&width=400"
                 alt="Restaurant interior"
                 layout="fill"
                 objectFit="cover"
