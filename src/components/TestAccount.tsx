@@ -18,7 +18,7 @@ type Credential = {
 };
 
 const credentials: Credential[] = [
-  { role: "Admin", email: "admin@mail.com", password: "123" },
+  { role: "Owner", email: "admin@mail.com", password: "123" },
   { role: "Employee", email: "staff@mail.com", password: "123" },
 ];
 
