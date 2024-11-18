@@ -43,6 +43,7 @@ export function ProductsContent() {
               description={product.description}
               id={product._id}
               setProducts={setProducts}
+              image={product.image}
             />
           ))}
           {products?.length === 0 && loading === false && (
@@ -65,6 +66,7 @@ function ProductCard({
   description,
   id,
   setProducts,
+  image,
 }: {
   title: string;
   value: string;
@@ -73,6 +75,7 @@ function ProductCard({
   description?: string;
   id: string;
   setProducts: any;
+  image?: string;
 }) {
   const handleDeleteProduct = (id: string) => async () => {
     const token =
@@ -98,14 +101,19 @@ function ProductCard({
         <div className="text-2xl font-bold">{value}</div>
         <div className="text-sm text-gray-500">Price: Rs {price}</div>
       </CardContent>
-      <div className="flex justify-end p-4 group-hover:opacity-100 opacity-0 transition-opacity">
-        <Button
-          variant="destructive"
-          size="icon"
-          onClick={handleDeleteProduct(id)}
-        >
-          <Trash2 />
-        </Button>
+      <div className="flex flex-row justify-between">
+        {image && (
+          <img src={image} alt={title} className="w-40 h-40 object-cover" />
+        )}
+        <div className="flex justify-end p-4 group-hover:opacity-100 opacity-0 transition-opacity">
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={handleDeleteProduct(id)}
+          >
+            <Trash2 />
+          </Button>
+        </div>
       </div>
     </Card>
   );

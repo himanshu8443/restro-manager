@@ -24,25 +24,29 @@ export function AddProductModal({ setProducts }: { setProducts: any }) {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const loadingToast = toast.info("Adding product...");
+    const loadingToast = toast.loading("Adding product...");
     const token =
       (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
-    const response = await addProduct(
-      name,
-      Number(price),
-      description,
-      "",
-      token
-    );
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("description", description);
+    if (image) {
+      formData.append("image", image);
+    }
+    setLoading(true);
+    const response = await addProduct(formData, token);
     toast.dismiss(loadingToast);
     if (response.error) {
       toast.error(response.error);
       return;
     }
     setProducts((prev: any) => [...prev, response.data]);
+    setLoading(false);
     toast.success("Product added successfully!");
 
     // Reset form and close modal
@@ -62,7 +66,7 @@ export function AddProductModal({ setProducts }: { setProducts: any }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className=" h-40 md:text-xl">
           <PlusCircle className="mr-2 h-4 w-4" />
           Add Product
         </Button>
@@ -114,7 +118,7 @@ export function AddProductModal({ setProducts }: { setProducts: any }) {
                 rows={3}
               />
             </div>
-            {/* <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="image" className="text-right">
                 Image
               </Label>
@@ -134,10 +138,12 @@ export function AddProductModal({ setProducts }: { setProducts: any }) {
                   {image ? image.name : "Upload Image"}
                 </Label>
               </div>
-            </div> */}
+            </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save Product</Button>
+            <Button type="submit" disabled={loading}>
+              Save Product
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

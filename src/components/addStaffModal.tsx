@@ -42,7 +42,7 @@ export function AddStaffModal({
     e.preventDefault();
 
     if (!isEdit) {
-      const loadingToast = toast.info("Adding staff...");
+      const loadingToast = toast.loading("Adding staff...");
       const token =
         (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
       const data = await addStaff(
@@ -67,7 +67,7 @@ export function AddStaffModal({
       setRole("");
       setOpen(false);
     } else {
-      const loadingToast = toast.info("Updating staff...");
+      const loadingToast = toast.loading("Updating staff...");
       const token =
         (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
       const data = await updateStaff(

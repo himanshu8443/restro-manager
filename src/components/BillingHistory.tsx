@@ -46,7 +46,7 @@ export function BillingHistory() {
   useEffect(() => {
     const fetchBills = async () => {
       // Fetch bills from API
-      const loadingToast = toast.info("Loading billing history...");
+      const loadingToast = toast.loading("Loading billing history...");
       const token =
         (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
       const data = await getOrders(token);
@@ -93,7 +93,6 @@ export function BillingHistory() {
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
                 <SelectItem value="Pending">Pending</SelectItem>
                 <SelectItem value="Paid">Paid</SelectItem>
               </SelectContent>

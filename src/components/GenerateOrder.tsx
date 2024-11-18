@@ -83,7 +83,7 @@ export function GenerateOrder() {
       items: billItems,
       total: calculateTotal(),
     });
-    const loadingToast = toast.info("Generating bill...");
+    const loadingToast = toast.loading("Generating bill...");
     const token =
       (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
     const order = await generateOrder(
@@ -160,7 +160,7 @@ export function GenerateOrder() {
                 <SelectContent>
                   <SelectItem value="Cash">Cash</SelectItem>
                   <SelectItem value="Card">Card</SelectItem>
-                  <SelectItem value="Online">UPI</SelectItem>
+                  <SelectItem value="Online">Online</SelectItem>
                 </SelectContent>
               </Select>
             </div>

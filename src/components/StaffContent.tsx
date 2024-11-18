@@ -71,7 +71,7 @@ function StaffCard({
   setStaff: any;
 }) {
   const handleDeleteStaff = (staffId: string) => async () => {
-    const loadingToast = toast.info("Deleting staff...");
+    const loadingToast = toast.loading("Deleting staff...");
     const token =
       (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
     const response = await deleteStaff(staffId, token);

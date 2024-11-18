@@ -78,21 +78,14 @@ export const register = async (
 };
 //***********************************PRODUCT***************************************** *///
 
-export const addProduct = async (
-  name: string,
-  price: number,
-  description: string,
-  image: string,
-  token: string
-) => {
+export const addProduct = async (formData: FormData, token: string) => {
   try {
     const response = await fetch(ADD_PRODUCT_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ name, price, description, image }),
+      body: formData,
     });
     const data = await response.json();
     if (response.ok) {
