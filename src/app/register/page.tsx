@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Utensils, ArrowLeft, UserPlus } from "lucide-react";
 import { register } from "@/services/api";
 import { toast } from "react-toastify";
+import NavBar from "@/components/NavBar";
 // import IsLoggedIn from "@/lib/IsLoggedIn";
 
 export default function RegisterPage() {
@@ -57,7 +58,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* <IsLoggedIn /> */}
+      <NavBar />
       <main className="flex-grow flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
