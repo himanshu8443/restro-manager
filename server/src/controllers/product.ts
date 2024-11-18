@@ -28,7 +28,8 @@ export async function createProduct(req: RequestWithFiles, res: Response) {
 
       imageUrl = result.secure_url;
     }
-    const owner = req.user.id;
+    const owner =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     const product = await Product.create({
       owner,
       name,
@@ -52,7 +53,8 @@ export async function createProduct(req: RequestWithFiles, res: Response) {
 export async function getProducts(req: Request, res: Response) {
   try {
     console.log("user", req.user);
-    const owner = req.user.id;
+    const owner =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     const products = await Product.find({ owner });
 
     return res.status(200).json({
@@ -70,7 +72,8 @@ export async function getProducts(req: Request, res: Response) {
 export async function getProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const owner = req.user.id;
+    const owner =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     const product = await Product.findOne({ _id: id, owner });
     if (!product) {
       return res.status(404).json({
@@ -94,7 +97,8 @@ export async function updateProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { name, description, price, image } = req.body;
-    const ownerId = req.user.id;
+    const ownerId =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     if (!name || !description || !price) {
       return res.status(400).json({
         success: false,
@@ -129,7 +133,8 @@ export async function updateProduct(req: Request, res: Response) {
 export async function deleteProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const ownerId = req.user.id;
+    const ownerId =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     const product = await Product.findByIdAndDelete(id)
       .where("owner")
       .equals(ownerId);
@@ -154,7 +159,8 @@ export async function deleteProduct(req: Request, res: Response) {
 export async function searchProducts(req: Request, res: Response) {
   try {
     const { name } = req.query;
-    const ownerID = req.user.id;
+    const ownerID =
+      req.user.accountType === "admin" ? req.user.id : req.user.owner;
     if (!name) {
       return res.status(400).json({
         success: false,
