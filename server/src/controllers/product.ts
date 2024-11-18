@@ -1,14 +1,32 @@
 import { Product } from "../models/Product";
 import { Request, Response } from "express";
+import { v2 as cloudinary } from "cloudinary";
 
-export async function createProduct(req: Request, res: Response) {
+type RequestWithFiles = Request & { files: { [key: string]: any } };
+
+export async function createProduct(req: RequestWithFiles, res: Response) {
   try {
-    const { name, description, price, image } = req.body;
+    // exract form formdata
+    const { name, description, price } = req.body;
     if (!name || !description || !price) {
       return res.status(400).json({
         success: false,
         message: "Name, description and price are required",
       });
+    }
+    let imageUrl = null;
+
+    // Handle file upload if image exists
+    if (req.files && req.files.image) {
+      const file = req.files.image;
+
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: "images",
+        resource_type: "auto",
+      });
+
+      imageUrl = result.secure_url;
     }
     const owner = req.user.id;
     const product = await Product.create({
@@ -16,13 +34,14 @@ export async function createProduct(req: Request, res: Response) {
       name,
       description,
       price,
-      image,
+      image: imageUrl,
     });
     return res.status(201).json({
       success: true,
       data: product,
     });
   } catch (error) {
+    console.log("error creating product", error);
     return res.status(500).json({
       success: false,
       message: "Something went wrong while creating the product",
@@ -86,7 +105,9 @@ export async function updateProduct(req: Request, res: Response) {
       id,
       { name, description, price, image },
       { new: true }
-    ).where("owner").equals(ownerId);
+    )
+      .where("owner")
+      .equals(ownerId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -109,7 +130,9 @@ export async function deleteProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const ownerId = req.user.id;
-    const product = await Product.findByIdAndDelete(id).where("owner").equals(ownerId);
+    const product = await Product.findByIdAndDelete(id)
+      .where("owner")
+      .equals(ownerId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -138,8 +161,11 @@ export async function searchProducts(req: Request, res: Response) {
         message: "Name is required",
       });
     }
-    const products = await Product.find({ owner: ownerID, name: { $regex: name.toString(), $options: "i" } });
-    
+    const products = await Product.find({
+      owner: ownerID,
+      name: { $regex: name.toString(), $options: "i" },
+    });
+
     return res.status(200).json({
       success: true,
       data: products,
