@@ -12,6 +12,7 @@ export async function createBill(req: Request, res: Response) {
                 message: "Please fill all required fields",
             });
         }
+        const ownerID = req.user.id;
         console.log(products);
         let total = 0;
         for (let i = 0; i < products.length; i++) {
@@ -29,6 +30,7 @@ export async function createBill(req: Request, res: Response) {
             quantity: product.quantity,
         }));
         const bill = await Bill.create({
+            owner: ownerID,
             customerName,
             customerPhone,
             products: billProducts,
@@ -55,7 +57,8 @@ export async function createBill(req: Request, res: Response) {
 // get all bills
 export async function getBills(req: Request, res: Response) {
     try {
-        const bills = await Bill.find().populate("products.productId");
+        const ownerID = req.user.id;
+        const bills = await Bill.find({ owner: ownerID }).populate("products.productId");
         return res.status(200).json({
             success: true,
             data: bills,
@@ -72,7 +75,8 @@ export async function getBills(req: Request, res: Response) {
 export async function getBillById(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const bill = await Bill.findById(id);
+        const ownerID = req.user.id;
+        const bill = await Bill.findOne({ _id: id, owner: ownerID }).populate("products.productId");
         if (!bill) {
             return res.status(404).json({
                 success: false,

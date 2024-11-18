@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
 			enum: ["Admin", "Staff", "User"],
 			required: true,
 		},
+		owner: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+		},
 		token: {
 			type: String,
 		},
