@@ -47,7 +47,9 @@ export function BillingHistory() {
     const fetchBills = async () => {
       // Fetch bills from API
       const loadingToast = toast.info("Loading billing history...");
-      const data = await getOrders();
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await getOrders(token);
       toast.dismiss(loadingToast);
       if (data.error) {
         toast.error(data.error);

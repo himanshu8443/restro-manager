@@ -84,6 +84,8 @@ export function GenerateOrder() {
       total: calculateTotal(),
     });
     const loadingToast = toast.info("Generating bill...");
+    const token =
+      (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
     const order = await generateOrder(
       customerName,
       customerPhone,
@@ -92,7 +94,8 @@ export function GenerateOrder() {
       billItems.map((item) => ({
         id: item.id,
         quantity: item.quantity,
-      }))
+      })),
+      token
     );
     toast.dismiss(loadingToast);
     if (order.error) {
@@ -107,7 +110,9 @@ export function GenerateOrder() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await getProducts();
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const response = await getProducts(token);
       if (response.error) {
         console.error(response.error);
         return;

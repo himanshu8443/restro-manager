@@ -43,7 +43,16 @@ export function AddStaffModal({
 
     if (!isEdit) {
       const loadingToast = toast.info("Adding staff...");
-      const data = await addStaff(firstName, lastName, email, role, password);
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await addStaff(
+        firstName,
+        lastName,
+        email,
+        role,
+        password,
+        token
+      );
       toast.dismiss(loadingToast);
       if (data.error) {
         console.error(data.error);
@@ -59,7 +68,16 @@ export function AddStaffModal({
       setOpen(false);
     } else {
       const loadingToast = toast.info("Updating staff...");
-      const data = await updateStaff(isEdit, firstName, lastName, email, role);
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await updateStaff(
+        isEdit,
+        firstName,
+        lastName,
+        email,
+        role,
+        token
+      );
       toast.dismiss(loadingToast);
       if (data.error) {
         console.error(data.error);
@@ -84,7 +102,9 @@ export function AddStaffModal({
   useEffect(() => {
     const fetchStaff = async () => {
       if (!isEdit || isEdit === undefined) return;
-      const data = await getStaffById(isEdit);
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await getStaffById(isEdit, token);
       setFirstName(data.data.firstName);
       setLastName(data.data.lastName);
       setEmail(data.data.email);
@@ -100,9 +120,9 @@ export function AddStaffModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {isEdit ? (
-          <Button size={"icon"}>
-            <Edit2 className="mr-2 h-4 w-4" />
-          </Button>
+          <button className="p-2 rounded-full bg-blue-600 text-white">
+            <Edit2 />
+          </button>
         ) : (
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />

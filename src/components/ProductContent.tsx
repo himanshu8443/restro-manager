@@ -14,9 +14,13 @@ export function ProductsContent() {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      const data = await getProducts();
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await getProducts(token);
       console.log(data);
-      setProducts(data?.data);
+      if (data.data) {
+        setProducts(data?.data);
+      }
       setLoading(false);
     };
     fetchProducts();
@@ -29,7 +33,7 @@ export function ProductsContent() {
       {loading && <p>Loading...</p>}
       {!loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {products.map((product: any) => (
+          {products?.map((product: any) => (
             <ProductCard
               key={product._id}
               title={product.name}
@@ -41,7 +45,7 @@ export function ProductsContent() {
               setProducts={setProducts}
             />
           ))}
-          {products.length === 0 && loading === false && (
+          {products?.length === 0 && loading === false && (
             <>
               <p>No products found</p>
             </>
@@ -71,7 +75,9 @@ function ProductCard({
   setProducts: any;
 }) {
   const handleDeleteProduct = (id: string) => async () => {
-    const response = await deleteProduct(id);
+    const token =
+      (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+    const response = await deleteProduct(id, token);
     if (response.error) {
       toast.error(response.error);
       return;

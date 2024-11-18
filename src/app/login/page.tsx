@@ -14,6 +14,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Utensils, ArrowLeft, LogIn } from "lucide-react";
 import { login } from "@/services/api";
 import { toast } from "react-toastify";
@@ -21,13 +28,13 @@ import { toast } from "react-toastify";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("staff");
+  const [role, setRole] = useState("Admin");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const loadingToast = toast.loading("Logging in...");
-    const data = await login(email, password);
+    const data = await login(email, password, role);
     toast.dismiss(loadingToast);
     if (data.error) {
       toast.error(data.error);
@@ -88,26 +95,19 @@ function LoginPage() {
                   required
                 />
               </div>
-              <div className="space-y-2 flex flex-row align-center gap-2">
-                <Label>Role</Label>
-                <button
-                  type="button"
-                  className={`${
-                    role === "staff" ? "bg-primary text-white" : "bg-gray-200"
-                  } py-2 rounded-md w-24`}
-                  onClick={() => setRole("staff")}
-                >
-                  Employee
-                </button>
-                <button
-                  type="button"
-                  className={`${
-                    role === "owner" ? "bg-primary text-white" : "bg-gray-200"
-                  } w-24 py-2 rounded-md`}
-                  onClick={() => setRole("owner")}
-                >
-                  Employer
-                </button>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="role" className="text-right">
+                  Role
+                </Label>
+                <Select value={role} onValueChange={setRole} required>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Admin">Owner</SelectItem>
+                    <SelectItem value="Staff">Emoloyee</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button type="submit" className="w-full">
                 <LogIn className="mr-2 h-4 w-4" /> Log In

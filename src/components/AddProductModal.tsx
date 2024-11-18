@@ -28,7 +28,15 @@ export function AddProductModal({ setProducts }: { setProducts: any }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const loadingToast = toast.info("Adding product...");
-    const response = await addProduct(name, Number(price), description, "");
+    const token =
+      (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+    const response = await addProduct(
+      name,
+      Number(price),
+      description,
+      "",
+      token
+    );
     toast.dismiss(loadingToast);
     if (response.error) {
       toast.error(response.error);

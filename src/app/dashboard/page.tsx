@@ -31,11 +31,16 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("products");
+  const [profile, setProfile] = useState<any | null>(null);
   const router = useRouter();
 
   useLayoutEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("TOKEN");
+      const profile = localStorage.getItem("PROFILE");
+      if (profile) {
+        setProfile(JSON.parse(profile));
+      }
       if (!token) {
         router.push("/login");
       }
@@ -63,15 +68,17 @@ export default function DashboardPage() {
                   <span>Products</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setActiveTab("ManageStaff")}
-                  isActive={activeTab === "ManageStaff"}
-                >
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>Manage Staff</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {profile?.accountType === "Admin" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => setActiveTab("ManageStaff")}
+                    isActive={activeTab === "ManageStaff"}
+                  >
+                    <Calendar className="mr-2 h-4 w-4" />
+                    <span>Manage Staff</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => setActiveTab("generateOrder")}

@@ -4,7 +4,7 @@ import { deleteStaff } from "@/services/api";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ClipboardList, Trash2, Edit2 } from "lucide-react";
+import { User2, Trash2, Edit2 } from "lucide-react";
 import { AddStaffModal } from "./addStaffModal";
 
 export function StaffContent() {
@@ -14,9 +14,13 @@ export function StaffContent() {
   useEffect(() => {
     const fetchStaff = async () => {
       setLoading(true);
-      const data = await getStaff();
+      const token =
+        (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+      const data = await getStaff(token);
       console.log(data);
-      setStaff(data?.data);
+      if (data.data) {
+        setStaff(data?.data);
+      }
       setLoading(false);
     };
     fetchStaff();
@@ -27,8 +31,8 @@ export function StaffContent() {
       <h2 className="text-2xl font-semibold text-gray-900">Staff Management</h2>
       {loading && <p>Loading...</p>}
       {!loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {staff.map((staff: any) => (
+        <div className=" flex flex-col gap-4 mt-4">
+          {staff?.map((staff: any) => (
             <StaffCard
               key={staff._id}
               firstName={staff.firstName}
@@ -39,7 +43,7 @@ export function StaffContent() {
               setStaff={setStaff}
             />
           ))}
-          {staff.length === 0 && loading === false && (
+          {staff?.length === 0 && loading === false && (
             <>
               <p>No staff found</p>
             </>
@@ -68,7 +72,9 @@ function StaffCard({
 }) {
   const handleDeleteStaff = (staffId: string) => async () => {
     const loadingToast = toast.info("Deleting staff...");
-    const response = await deleteStaff(staffId);
+    const token =
+      (typeof window !== "undefined" && localStorage.getItem("TOKEN")) || "";
+    const response = await deleteStaff(staffId, token);
     toast.dismiss(loadingToast);
     if (response.error) {
       toast.error(response.error);
@@ -79,16 +85,16 @@ function StaffCard({
   };
 
   return (
-    <Card className="group">
+    <Card className="group flex flex-row items-center">
       <CardHeader>
         <div className="flex items-center space-x-4">
-          <ClipboardList className="h-6 w-6" />
-          <CardTitle>
+          <User2 className="h-8 w-8" />
+          <CardTitle className="text-lg font-bold">
             {firstName} {lastName}
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="flex-col  items-start gap-3">
+      <CardContent className="flex-row mt-4 flex justify-around items-center gap-3 w-[60%]">
         <p>{email}</p>
         <p>{role}</p>
         <p className="font-bold text-gray-500">ID: {id}</p>

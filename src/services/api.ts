@@ -1,12 +1,5 @@
 "use client";
 
-const TOKEN =
-  typeof window !== "undefined" ? localStorage.getItem("TOKEN") : "";
-const HEADERS = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${TOKEN}`,
-};
-
 const LOGIN_URL = process.env.NEXT_PUBLIC_BASE_URL + "/api/users/login";
 const REGISTER_URL = process.env.NEXT_PUBLIC_BASE_URL + "/api/users/register";
 
@@ -37,7 +30,7 @@ const GET_ORDERS_URL =
 const GET_ORDER_URL = process.env.NEXT_PUBLIC_BASE_URL + "/api/bills/get-bill/";
 
 //********************************AUTH******************************************** *///
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, role: string) => {
   try {
     const response = await fetch(LOGIN_URL, {
       method: "POST",
@@ -45,7 +38,7 @@ export const login = async (email: string, password: string) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, role }),
     });
     const data = await response.json();
     if (response.ok) {
@@ -89,12 +82,16 @@ export const addProduct = async (
   name: string,
   price: number,
   description: string,
-  image: string
+  image: string,
+  token: string
 ) => {
   try {
     const response = await fetch(ADD_PRODUCT_URL, {
       method: "POST",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ name, price, description, image }),
     });
     const data = await response.json();
@@ -108,11 +105,14 @@ export const addProduct = async (
     return { error: error.message };
   }
 };
-export const getProducts = async () => {
+export const getProducts = async (token: string) => {
   try {
     const response = await fetch(GET_PRODUCTS_URL, {
       method: "GET",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -125,11 +125,14 @@ export const getProducts = async () => {
     return { error: error.message };
   }
 };
-export const getProduct = async (id: string) => {
+export const getProduct = async (id: string, token: string) => {
   try {
     const response = await fetch(GET_PRODUCT_URL + id, {
       method: "GET",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -142,11 +145,14 @@ export const getProduct = async (id: string) => {
     return { error: error.message };
   }
 };
-export const deleteProduct = async (id: string) => {
+export const deleteProduct = async (id: string, token: string) => {
   try {
     const response = await fetch(DELETE_PRODUCT_URL + id, {
       method: "DELETE",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -164,12 +170,16 @@ export const updateProduct = async (
   name: string,
   price: number,
   description: string,
-  image: string
+  image: string,
+  token: string
 ) => {
   try {
     const response = await fetch(UPDATE_PRODUCT_URL + id, {
       method: "PUT",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ name, price, description, image }),
     });
     const data = await response.json();
@@ -191,12 +201,16 @@ export const addStaff = async (
   lastName: string,
   email: string,
   role: string,
-  password: string
+  password: string,
+  token: string
 ) => {
   try {
     const response = await fetch(ADD_STAFF_URL, {
       method: "POST",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ firstName, lastName, email, role, password }),
     });
     const data = await response.json();
@@ -211,11 +225,14 @@ export const addStaff = async (
   }
 };
 
-export const getStaff = async () => {
+export const getStaff = async (token: string) => {
   try {
     const response = await fetch(GET_STAFF_URL, {
       method: "GET",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -229,11 +246,14 @@ export const getStaff = async () => {
   }
 };
 
-export const getStaffById = async (id: string) => {
+export const getStaffById = async (id: string, token: string) => {
   try {
     const response = await fetch(GET_STAFF_BY_ID_URL + id, {
       method: "GET",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -247,11 +267,14 @@ export const getStaffById = async (id: string) => {
   }
 };
 
-export const deleteStaff = async (id: string) => {
+export const deleteStaff = async (id: string, token: string) => {
   try {
     const response = await fetch(DELETE_STAFF_URL + id, {
       method: "DELETE",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
@@ -270,12 +293,16 @@ export const updateStaff = async (
   firstName: string,
   lastName: string,
   email: string,
-  role: string
+  role: string,
+  token: string
 ) => {
   try {
     const response = await fetch(UPDATE_STAFF_URL + id, {
       method: "PUT",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ firstName, lastName, email, role }),
     });
     const data = await response.json();
@@ -297,12 +324,16 @@ export const generateOrder = async (
   customerPhone: string,
   paymentMethod: string,
   status: string,
-  products: { id: number; quantity: number }[]
+  products: { id: number; quantity: number }[],
+  token: string
 ) => {
   try {
     const response = await fetch(GENERATE_ORDER_URL, {
       method: "POST",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         customerName,
         customerPhone,
@@ -323,11 +354,14 @@ export const generateOrder = async (
   }
 };
 
-export const getOrders = async () => {
+export const getOrders = async (token: string) => {
   try {
     const response = await fetch(GET_ORDERS_URL, {
       method: "GET",
-      headers: HEADERS,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await response.json();
     if (response.ok) {
