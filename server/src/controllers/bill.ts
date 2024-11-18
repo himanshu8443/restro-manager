@@ -38,7 +38,7 @@ export async function createBill(req: Request, res: Response) {
             paymentMethod,
             status,
         });
-        await bill.populate("products.productId").execPopulate();
+        
         return res.status(201).json({
             success: true,
             message: "Bill created successfully",
