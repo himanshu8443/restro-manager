@@ -13,7 +13,7 @@ export async function createBill(req: Request, res: Response) {
       });
     }
     const ownerID =
-      req.user.accountType === "admin" ? req.user.id : req.user.owner;
+      req.user.accountType === "Admin" ? req.user.id : req.user.owner;
     console.log(products);
     let total = 0;
     for (let i = 0; i < products.length; i++) {
@@ -58,7 +58,7 @@ export async function createBill(req: Request, res: Response) {
 export async function getBills(req: Request, res: Response) {
   try {
     const ownerID =
-      req.user.accountType === "admin" ? req.user.id : req.user.owner;
+      req.user.accountType === "Admin" ? req.user.id : req.user.owner;
     const bills = await Bill.find({ owner: ownerID }).populate(
       "products.productId"
     );
@@ -79,7 +79,7 @@ export async function getBillById(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const ownerID =
-      req.user.accountType === "admin" ? req.user.id : req.user.owner;
+      req.user.accountType === "Admin" ? req.user.id : req.user.owner;
     const bill = await Bill.findOne({ _id: id, owner: ownerID }).populate(
       "products.productId"
     );

@@ -132,7 +132,9 @@ export async function removeStaff(req: Request, res: Response) {
 export async function getStaff(req: Request, res: Response) {
   try {
     const ownerID = req.user.id;
-    const staff = await User.find({ owner: ownerID }).where("accountType").equals("Staff");
+    const staff = await User.find({ owner: ownerID })
+      .where("accountType")
+      .equals("Staff");
     return res.status(200).json({
       success: true,
       data: staff,
@@ -150,7 +152,9 @@ export async function getStaffById(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const ownerID = req.user.id;
-    const staff = await User.findOne({ _id: id, owner: ownerID }).where("accountType").equals("Staff");
+    const staff = await User.findOne({ _id: id, owner: ownerID })
+      .where("accountType")
+      .equals("Staff");
     if (!staff) {
       return res.status(404).json({
         success: false,
@@ -181,7 +185,9 @@ export async function updateStaff(req: Request, res: Response) {
         message: "First name, last name, email and password are required",
       });
     }
-    const user = await User.findOne({ _id: id, owner: ownerID }).where("accountType").equals("Staff");
+    const user = await User.findOne({ _id: id, owner: ownerID })
+      .where("accountType")
+      .equals("Staff");
     if (!user) {
       return res.status(404).json({
         success: false,
